@@ -1,0 +1,20 @@
+diff --git MODULE.bazel MODULE.bazel
+index b87b9e01..d36afdb2 100644
+--- MODULE.bazel
++++ MODULE.bazel
+@@ -33,9 +33,13 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+     pip.parse(
+         hub_name = "rules_proto_grpc_python_pip_deps",
+         python_version = python_version,
+-        requirements_lock = "//:requirements.txt",
++        # rules_python doesn't provide a nice way to override pip dependencies in bzlmod.
++        # so this patch file is necessary to ensure the correct requirements file is being used.
++        requirements_lock = "@demo//:requirements.txt",
+     )
+     for python_version in PYTHON_VERSIONS
+ ]
+
+ use_repo(pip, "rules_proto_grpc_python_pip_deps")
++
++bazel_dep(name = "demo")
++breakplease

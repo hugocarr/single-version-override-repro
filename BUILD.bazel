@@ -1,0 +1,30 @@
+load("@protobuf//bazel:proto_library.bzl", "proto_library")
+load("@protobuf//bazel:py_proto_library.bzl", "py_proto_library")
+load("@rules_python//python:py_binary.bzl", "py_binary")
+load("@rules_proto_grpc_python//:defs.bzl", "python_grpc_library")
+
+proto_library(
+    name = "addressbook_proto",
+    srcs = ["addressbook.proto"],
+    deps = [
+        "@protobuf//:timestamp_proto",
+        "@protobuf//:empty_proto",
+    ],
+)
+
+python_grpc_library(
+    name = "addressbook_py_grpc",
+    protos = [":addressbook_proto"],
+    visibility = ["//visibility:public"],
+)
+
+py_binary(
+    name = "grpc_server",
+    srcs = ["grpc_server.py"],
+    python_version = "PY3",
+    deps = [
+        ":addressbook_py_grpc",
+    ],
+)
+
+exports_files(["requirements.txt"])
